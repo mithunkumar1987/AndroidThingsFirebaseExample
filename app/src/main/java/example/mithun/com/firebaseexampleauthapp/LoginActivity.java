@@ -3,22 +3,22 @@ package example.mithun.com.firebaseexampleauthapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +28,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    private static final String TAG = LoginActivity.class.getCanonicalName();
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -61,6 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +102,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
     private void populateAutoComplete() {
@@ -148,6 +168,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
+        if (!validateForm()) {
+
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            // Store values at the time of the login attempt.
+            String email = mEmailView.getText().toString();
+            String password = mPasswordView.getText().toString();
+            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask.execute((Void) null);
+        }
+    }
+
+    private boolean validateForm() {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -181,13 +216,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
         }
+        return !cancel;
     }
 
     private boolean isEmailValid(String email) {
@@ -234,6 +264,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    private void showProgressDialog() {
+        showProgress(true);
+    }
+
+    private void hideProgressDialog() {
+        showProgress(false);
     }
 
     @Override
@@ -296,6 +334,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String TAG = UserLoginTask.class.getCanonicalName();
         private final String mEmail;
         private final String mPassword;
 
@@ -307,8 +346,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
-            try {
+            createAccount(mEmail, mPassword);
+           /* try {
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -321,7 +360,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
             // TODO: register the new account here.
             return true;
@@ -330,10 +369,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+            //showProgress(false);
 
             if (success) {
-                finish();
+                // finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -345,6 +384,79 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
+
+    }
+
+    private void createAccount(String email, String password) {
+        Log.d(TAG, "createAccount:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
+        showProgressDialog();
+
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+
+                        // [START_EXCLUDE]
+                        showSignupLoginResult(mAuth.getCurrentUser());
+                        hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END create_user_with_email]
+    }
+
+    private void updateUI(FirebaseUser user) {
+        hideProgressDialog();
+        if (user != null) {
+            Toast.makeText(this, "register_successful", Toast.LENGTH_LONG).show();
+          /*  mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
+                    user.getEmail(), user.isEmailVerified()));
+            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+
+            findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
+            findViewById(R.id.email_password_fields).setVisibility(View.GONE);
+            findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
+
+            findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());*/
+        } else {
+            Toast.makeText(this, "register fail", Toast.LENGTH_LONG).show();
+           /* mStatusTextView.setText(R.string.signed_out);
+            mDetailTextView.setText(null);
+
+            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
+            findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);*/
+        }
+
+
+    }
+
+    private void showSignupLoginResult(FirebaseUser user){
+        Intent intent = new Intent(this, LoginResultActivity.class);
+        if (user != null) {
+            intent.putExtra(LoginResultActivity.INTENT_EXTRA_STATUS_MSG, "Signup/register successful");
+        } else {
+            intent.putExtra(LoginResultActivity.INTENT_EXTRA_STATUS_MSG, "Signup/register fail");
+        }
+        startActivity(intent);
     }
 }
 
