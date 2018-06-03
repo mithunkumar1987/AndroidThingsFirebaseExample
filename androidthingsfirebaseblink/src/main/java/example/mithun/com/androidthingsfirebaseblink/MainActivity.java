@@ -39,7 +39,9 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             Log.e(TAG, "Error on PeripheralIO API", e);
         }
-        FirebaseFirestoreHelper.getLedOnStatus(ledHandler);
+        setLedStatusStaticHandler(ledHandler);
+        FirebaseFirestoreHelper.getLedOnStatus();
+        FirebaseFirestoreHelper.setRealtimeUpdateListener();
     }
 
     @Override
@@ -111,4 +113,34 @@ public class MainActivity extends Activity {
             }
         }
     };
+
+    public static Handler mLEDStatusHandler = null;
+
+    public static void setLedStatusStaticHandler(Handler handler) {
+        mLEDStatusHandler = handler;
+    }
+
+    public static void updateLEDStatus(String ledStatus) {
+        MainActivity.LED_STATUS ledStatusVal = MainActivity.LED_STATUS.LED_OFF;
+        if (ledStatus == null) {
+            ledStatus = "0";
+        }
+        switch (ledStatus) {
+            case "1":
+                ledStatusVal = MainActivity.LED_STATUS.LED_ON;
+                break;
+            case "2":
+                ledStatusVal = MainActivity.LED_STATUS.LED_BLINK;
+                break;
+            case "0":
+            default:
+                ledStatusVal = MainActivity.LED_STATUS.LED_OFF;
+                break;
+
+        }
+        if (mLEDStatusHandler != null) {
+            mLEDStatusHandler.sendMessage(mLEDStatusHandler.obtainMessage(ledStatusVal.ordinal()));
+        }
+
+    }
 }
