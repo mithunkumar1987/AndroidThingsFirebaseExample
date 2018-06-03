@@ -43,5 +43,10 @@ public class FirebaseFireStoreHelper {
 
     }
 
+    public static void updateLedStatus(String status){
+        final DocumentReference docRef = db.collection("led").document("TNnpy3ekD74vDNHW47SC");
+        docRef.update("status",status);
+    }
+
 
 }

@@ -39,8 +39,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import example.mithun.com.FirebaseFirestore.FirebaseFireStoreHelper;
-
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -98,8 +96,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseFireStoreHelper.initFireBaseFireStore();
-                //attemptLogin();
+                //FirebaseFireStoreHelper.initFireBaseFireStore();
+                attemptLogin();
             }
         });
 
@@ -270,11 +268,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void showProgressDialog() {
-        showProgress(true);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showProgress(true);
+            }
+        });
+
     }
 
     private void hideProgressDialog() {
-        showProgress(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showProgress(false);
+            }
+        });
     }
 
     @Override
@@ -427,7 +436,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void updateUI(FirebaseUser user) {
-        hideProgressDialog();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideProgressDialog();
+            }
+        });
+
         if (user != null) {
             //Toast.makeText(this, "register_successful", Toast.LENGTH_LONG).show();
           /*  mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
