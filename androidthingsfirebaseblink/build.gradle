@@ -29,7 +29,6 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     compileOnly 'com.google.android.things:androidthings:+'
     compile 'com.google.firebase:firebase-core:16.0.0'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

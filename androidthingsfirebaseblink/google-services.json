@@ -1,31 +1,31 @@
 {
   "project_info": {
-    "project_number": "232913353965",
-    "firebase_url": "https://thingsblinkfirebaseexample.firebaseio.com",
-    "project_id": "thingsblinkfirebaseexample",
-    "storage_bucket": "thingsblinkfirebaseexample.appspot.com"
+    "project_number": "1071522963135",
+    "firebase_url": "https://myfirebaseexampeauthapp.firebaseio.com",
+    "project_id": "myfirebaseexampeauthapp",
+    "storage_bucket": "myfirebaseexampeauthapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:232913353965:android:24e08d4b51ec97e4",
+        "mobilesdk_app_id": "1:1071522963135:android:24e08d4b51ec97e4",
         "android_client_info": {
           "package_name": "example.mithun.com.androidthingsfirebaseblink"
         }
       },
       "oauth_client": [
         {
-          "client_id": "232913353965-fhjuliu8k5coj1q59po56f6v7r25vcd3.apps.googleusercontent.com",
+          "client_id": "1071522963135-lmv1qmu9h87or19t1jqt3j4f403nsa24.apps.googleusercontent.com",
           "client_type": 3
         },
         {
-          "client_id": "232913353965-fhjuliu8k5coj1q59po56f6v7r25vcd3.apps.googleusercontent.com",
+          "client_id": "1071522963135-lmv1qmu9h87or19t1jqt3j4f403nsa24.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAQlz46vN9FNCtLF9oVJtncfSfpRKQEVss"
+          "current_key": "AIzaSyAj7JoRxS_aunJRFqjVRMyAABFgngKch_U"
         }
       ],
       "services": {
@@ -35,6 +35,54 @@
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071522963135:android:05ffbb4e369bc76f",
+        "android_client_info": {
+          "package_name": "example.mithun.com.firebaseexampleauthapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071522963135-gopvh4ablp8c6d8of2v6nti49usjcjv1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "example.mithun.com.firebaseexampleauthapp",
+            "certificate_hash": "05756a95649d1a81f6271ed3b434550e7bfd31a8"
+          }
+        },
+        {
+          "client_id": "1071522963135-lmv1qmu9h87or19t1jqt3j4f403nsa24.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1071522963135-lmv1qmu9h87or19t1jqt3j4f403nsa24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj7JoRxS_aunJRFqjVRMyAABFgngKch_U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071522963135-lmv1qmu9h87or19t1jqt3j4f403nsa24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
