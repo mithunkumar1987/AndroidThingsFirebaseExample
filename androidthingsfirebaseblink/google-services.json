@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "232913353965",
+    "firebase_url": "https://thingsblinkfirebaseexample.firebaseio.com",
+    "project_id": "thingsblinkfirebaseexample",
+    "storage_bucket": "thingsblinkfirebaseexample.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232913353965:android:24e08d4b51ec97e4",
+        "android_client_info": {
+          "package_name": "example.mithun.com.androidthingsfirebaseblink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232913353965-fhjuliu8k5coj1q59po56f6v7r25vcd3.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "232913353965-fhjuliu8k5coj1q59po56f6v7r25vcd3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQlz46vN9FNCtLF9oVJtncfSfpRKQEVss"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
