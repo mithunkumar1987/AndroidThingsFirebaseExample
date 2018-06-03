@@ -3,12 +3,16 @@ package example.mithun.com.androidthingsfirebaseblink;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.PeripheralManager;
 
 import java.io.IOException;
+
+import example.mithun.com.androidthingsfirebaseblink.FirebaseFirestore.FirebaseFirestoreHelper;
 
 public class MainActivity extends Activity {
 
@@ -31,10 +35,11 @@ public class MainActivity extends Activity {
             Log.i(TAG, "Start blinking LED GPIO pin");
             // Post a Runnable that continuously switch the state of the GPIO, blinking the
             // corresponding LED
-            mHandler.post(mBlinkRunnable);
+            //mHandler.post(mBlinkRunnable);
         } catch (IOException e) {
             Log.e(TAG, "Error on PeripheralIO API", e);
         }
+        FirebaseFirestoreHelper.getLedOnStatus(ledHandler);
     }
 
     @Override
@@ -67,6 +72,42 @@ public class MainActivity extends Activity {
                 mHandler.postDelayed(mBlinkRunnable, INTERVAL_BETWEEN_BLINKS_MS);
             } catch (IOException e) {
                 Log.e(TAG, "Error on PeripheralIO API", e);
+            }
+        }
+    };
+
+    public static enum LED_STATUS {
+        LED_OFF, LED_ON, LED_BLINK
+    }
+
+    Handler ledHandler = new Handler(Looper.getMainLooper()) {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            LED_STATUS status = LED_STATUS.values()[msg.what];
+            mHandler.removeCallbacks(mBlinkRunnable);
+            try {
+                switch ((status)) {
+                    case LED_ON:
+                        Log.i(TAG, "LED_ON");
+                        mLedGpio.setValue(true);
+                        break;
+
+                    case LED_BLINK:
+                        Log.i(TAG, "LED_BLINK");
+                        mHandler.post(mBlinkRunnable);
+                        break;
+
+                    case LED_OFF:
+                    default:
+                        Log.i(TAG, "LED_OFF");
+                        mLedGpio.setValue(false);
+                        break;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     };

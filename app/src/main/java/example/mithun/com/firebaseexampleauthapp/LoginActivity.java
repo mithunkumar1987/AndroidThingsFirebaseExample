@@ -452,7 +452,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void showSignupLoginResult(FirebaseUser user){
+    private void showSignupLoginResult(FirebaseUser user) {
         Intent intent = new Intent(this, LoginResultActivity.class);
         if (user != null) {
             intent.putExtra(LoginResultActivity.INTENT_EXTRA_STATUS_MSG, "Signup/register successful");
